@@ -126,15 +126,17 @@ Jawab HANYA dengan JSON tanpa teks lain:
                 sort_keys=True,
             )
 
-        result = gl.eq_principle.prompt_non_comparative(
+        # prompt_comparative mengembalikan hasil run() milik leader apa adanya,
+        # validator menjalankan run() sendiri lalu membandingkan dengan prinsip ini.
+        result = gl.eq_principle.prompt_comparative(
             run,
-            task="Menilai validitas dan severity laporan bug bounty terhadap kode target",
-            criteria=(
+            principle=(
                 "Field 'valid' harus sama. Field 'severity' harus sama atau "
                 "bertetangga (misal high vs critical masih dapat diterima). "
-                "Alasan boleh berbeda kata-kata selama maknanya konsisten."
+                "Field 'reasoning' boleh berbeda kata-kata selama maknanya konsisten."
             ),
         )
+        result = str(result).replace("```json", "").replace("```", "").strip()
         return json.loads(result)
 
     # ---------- write ----------
